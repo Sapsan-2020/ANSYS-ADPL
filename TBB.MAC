@@ -1,0 +1,60 @@
+/COM, APDL Commands for Post Processing
+/COM, Вычисляет эквивалентные напряжения в выбранных узлах сетки КЭ 
+/COM, и записывает в файлы в соответсвие с количеством сочетания расчётных нагрузок.
+!
+*ask,fname,the fname,'stress'
+*ask,kname,the kname,'cb'
+*ask,knum,the knum,1
+*d0,m,1,kmum
+cmsel,s,%kname%%m%
+SET,LAST
+*get,r,active, ,set,lstp
+*get,NM,node, ,num,max
+W=0
+*do,j,1,r
+SET,NEXT
+*do,i,1,NM
+a=nsel(i)
+*if,a,eq,1,then
+*get,t%j%_%i%,node,i,s,eqv
+W=W+1
+*else
+*endif 
+*enddo
+*enddo
+w1=w/r
+r1=r+1
+*dim,cp, ,w1
+k1=0
+*do,k,1,NM
+b=nsel(k)
+*if,b,eq,1,then
+k1=k1+1
+cp(k1,1)=k
+*else
+*endif 
+*enddo
+*do,i1,1,w1
+*dim,a%i1%, ,r1
+a%i1%(1,1)=cp(i1,1)
+SET,LAST
+*do,j1,1,r
+SET,NEXT
+j2=j1+1
+*get,a%i1%(j2,1),node,cp(i1,1),s,eqv
+*enddo 
+*enddo
+*do,p,1,w1
+*CFOPEN,%fname%%p%,txt,
+*vwrite,a%p%(1,1)
+(E8.3)
+*cfclos
+*enddo
+*enddo
+
+! Сапожников А.Н. 
+! С.-Петербург.
+! 2000г.
+
+
+
